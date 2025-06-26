@@ -13,7 +13,6 @@ import ProjectPage from "./pages/project_page/ProjectPage";
 import { Route, Routes } from "react-router-dom";
 import Footer from "./components/footer/Footer";
 import About from "./components/aboutme/about/About";
-import Ranking from "./components/aboutme/ranking/Ranking";
 import EducationJourney from "./components/aboutme/journey/EducationJourney";
 import ExperienceJourney from "./components/aboutme/journey/ExperienceJourney";
 import CertificatePage from "./pages/certificate_page/CertificatePage";
@@ -58,7 +57,6 @@ function App() {
               path="experiencejourney"
               element={<ExperienceJourney />}
             ></Route>
-            <Route path="ranking" element={<Ranking />}></Route>
             <Route path="socialmedia" element={<SocialMedia />}></Route>
             <Route path="toolkit" element={<Toolkit />}></Route>
           </Route>

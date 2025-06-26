@@ -1,42 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import Zoom from "react-reveal/Zoom";
-import axios from "axios";
-import { useState } from "react";
 import { AiOutlineSend } from "react-icons/ai";
 import { FiPhone, FiAtSign } from "react-icons/fi";
 import { HiOutlineLocationMarker } from "react-icons/hi";
+import Swal from 'sweetalert2';
 
 export default function Contactus() {
-  const [formData, setFormData] = useState(new FormData());
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const onSubmit = async (event) => {
+    event.preventDefault();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const formData = {
+      access_key: "8a997969-6666-43d9-9662-14fb9cab9015",
+      name,
+      email,
+      message
+    };
 
-    if (!(formData.name && formData.email && formData.message)) {
-      alert("Something went wrong!");
-      return;
+    const res = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify(formData)
+    }).then((res) => res.json());
+
+    if (res.success) {
+      Swal.fire({
+        title: "Success",
+        text: "Message sent successfully!",
+        icon: "success"
+      });
+
+      // Clear input fields
+      setName("");
+      setEmail("");
+      setMessage("");
     }
-
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/submitForm",
-        formData
-      );
-      console.log(response.data.message); // Log the response from the backend
-
-      alert(`Thanks ${formData.name}, I will shortly connect with you!`);
-    } catch (error) {
-      console.error("Error submitting the form:", error);
-
-      alert("Backend Server was not Running while submitting the form.");
-    }
-
-    setFormData({});
   };
 
   return (
@@ -44,10 +49,7 @@ export default function Contactus() {
       <Container fluid className="certificate-section" id="about">
         <Container>
           <Row>
-            <Col
-              md={12}
-              className="certificate-description d-flex justify-content-start"
-            >
+            <Col md={12} className="certificate-description d-flex justify-content-start">
               <Zoom left cascade>
                 <h1 className="aboutme-heading">Contact me</h1>
               </Zoom>
@@ -56,60 +58,50 @@ export default function Contactus() {
               <Row>
                 <Col md={4}>
                   <div className="contacts-form" data-aos="fade-up">
-                    <form>
+                    <form onSubmit={onSubmit}>
                       <div className="input-container d-flex flex-column">
-                        <label htmlFor="username" className="label-class">
-                          Full Name
-                        </label>
+                        <label htmlFor="username" className="label-class">Full Name</label>
                         <input
                           type="text"
                           className="form-input input-class"
                           id="username"
                           name="name"
-                          aria-describedby="emailHelp"
                           placeholder="Enter your name"
-                          value={formData.name || ""}
-                          onChange={handleChange}
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          required
                         />
                       </div>
                       <div className="input-container d-flex flex-column">
-                        <label htmlFor="email" className="label-class">
-                          Email address
-                        </label>
+                        <label htmlFor="email" className="label-class">Email address</label>
                         <input
                           type="email"
                           className="form-input input-class"
-                          name="email"
                           id="email"
-                          aria-describedby="emailHelp"
+                          name="email"
                           placeholder="Enter email"
-                          value={formData.email || ""}
-                          onChange={handleChange}
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
                         />
                       </div>
                       <div className="input-container d-flex flex-column">
-                        <label htmlFor="userMessage" className="label-class">
-                          Message
-                        </label>
+                        <label htmlFor="userMessage" className="label-class">Message</label>
                         <textarea
                           className="form-message input-class"
                           id="userMessage"
                           name="message"
                           rows="3"
                           placeholder="Enter message"
-                          value={formData.message || ""}
-                          onChange={handleChange}
+                          value={message}
+                          onChange={(e) => setMessage(e.target.value)}
+                          required
                         />
                       </div>
 
                       <div className="submit-btn">
-                        <button
-                          type="submit"
-                          className="submitBtn"
-                          onClick={handleSubmit}
-                        >
-                          Submit
-                          <AiOutlineSend className="send-icon" />
+                        <button type="submit" className="submitBtn">
+                          Submit <AiOutlineSend className="send-icon" />
                         </button>
                       </div>
                     </form>
@@ -117,38 +109,25 @@ export default function Contactus() {
                 </Col>
                 <Col md={7}>
                   <div className="contacts-details">
-                    <a
-                      href={`vivekbhojani123@gmail.com`}
-                      className="personal-details"
-                    >
-                      <div className="detailsIcon">
-                        <FiAtSign />
-                      </div>
-                      <p style={{ color: "#fbd9ad" }}>
-                        vivekbhojani123@gmail.com
-                      </p>
+                    <a href="mailto:vivekbhojani123@gmail.com" className="personal-details">
+                      <div className="detailsIcon"><FiAtSign /></div>
+                      <p style={{ color: "#fbd9ad" }}>vivekbhojani123@gmail.com</p>
                     </a>
-                    <a
-                      href={`tel:+919016167846`}
-                      className="personal-details"
-                    >
-                      <div className="detailsIcon">
-                        <FiPhone />
-                      </div>
-                      <p style={{ color: "#fbd9ad" }}>+919016167846</p>
+                    <a href="tel:+919016167846" className="personal-details">
+                      <div className="detailsIcon"><FiPhone /></div>
+                      <p style={{ color: "#fbd9ad" }}>+91 90161 67846</p>
                     </a>
                     <a
                       href="https://maps.app.goo.gl/WAdHpzRPyspz61iMA"
                       target="_blank"
+                      rel="noopener noreferrer"
                       className="personal-details"
                     >
                       <div className="personal-details">
-                        <div className="detailsIcon">
-                          <HiOutlineLocationMarker />
-                        </div>
+                        <div className="detailsIcon"><HiOutlineLocationMarker /></div>
                         <p style={{ color: "#fbd9ad" }}>
-                          Ramkrishna Apartment,OPP Purvi Apartment,
-                          H-Colony, Ambawadi,
+                          Ramkrishna Apartment, OPP Purvi Apartment,<br />
+                          H-Colony, Ambawadi,<br />
                           Ahmedabad-380015
                         </p>
                       </div>
